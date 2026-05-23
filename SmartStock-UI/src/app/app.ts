@@ -1,0 +1,41 @@
+import { Component, inject, signal, HostListener } from '@angular/core';
+import { Router, RouterOutlet, RouterModule } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, SidebarComponent ,CommonModule, RouterModule],
+  templateUrl: './app.html',
+  styleUrl: './app.scss'
+})
+export class App {
+  authService = inject(AuthService); // Public for signal access in template
+  private router = inject(Router);
+
+  isProfileMenuOpen = signal(false);
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown')) {
+      this.closeProfileMenu();
+    }
+  }
+
+  toggleProfileMenu() {
+    this.isProfileMenuOpen.set(!this.isProfileMenuOpen());
+  }
+
+  closeProfileMenu() {
+    this.isProfileMenuOpen.set(false);
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+  title = 'SmartStock-UI';
+
+}
