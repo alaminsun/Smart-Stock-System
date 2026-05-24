@@ -33,10 +33,10 @@
                                        placeholder="Choose Product..."
                                        class="shadow-none">
                                 <ng-template ng-label-tmp let-item="item">
-                                    {{item.name}} - (€{{item.price}})
+                                    {{item.name}} - (€{{item.salePrice}})
                                 </ng-template>
                                 <ng-template ng-option-tmp let-item="item">
-                                    {{item.name}} - (€{{item.price}}) [Stock: {{item.quantity}}]
+                                    {{item.name}} - (€{{item.salePrice}}) [Stock: {{item.quantity}}]
                                 </ng-template>
                             </ng-select>
                         </div>

@@ -57,10 +57,6 @@ export class BillingComponent implements OnInit {
   ngOnInit() {
     console.log('BillingComponent Initialized');
     this.loadInitialData();
-    this.inventoryService.getProducts().subscribe(res => {
-      this.products.set(res);
-      console.log('Products Loaded:', res);
-    });
   }
 
   loadInitialData() {
@@ -126,9 +122,9 @@ export class BillingComponent implements OnInit {
       const newItem = {
         productId: product.id,
         productName: product.name,
-        unitPrice: product.price,
+        unitPrice: product.salePrice,
         quantity: this.quantity,
-        subTotal: product.price * this.quantity
+        subTotal: product.salePrice * this.quantity
       };
       this.invoiceItems.set([...this.invoiceItems(), newItem]);
     }
