@@ -1,9 +1,9 @@
-<div class="sidebar shadow">
+<div class="sidebar shadow" [class.collapsed]="isCollapsed()">
   <div class="sidebar-brand">
     <div class="brand-icon">
       <i class="bi bi-box-seam-fill"></i>
     </div>
-    <div class="brand-text">
+    <div class="brand-text" *ngIf="!isCollapsed()">
       <h4 class="mb-0">SmartStock</h4>
       <small>Enterprise v3.0</small>
     </div>
@@ -19,19 +19,20 @@
                [routerLink]="m1.children?.length ? null : m1.link"
                routerLinkActive="active"
                [class.has-children]="m1.children?.length"
-               [class.expanded]="m1.isExpanded">
+               [class.expanded]="m1.isExpanded"
+               [title]="isCollapsed() ? m1.title : ''">
               
               <div class="d-flex align-items-center">
                 <i [class]="m1.icon || 'bi bi-folder'" class="nav-icon"></i> 
-                <span class="nav-label">{{ m1.title }}</span>
+                <span class="nav-label" *ngIf="!isCollapsed()">{{ m1.title }}</span>
               </div>
 
-              @if (m1.children?.length) {
+              @if (m1.children?.length && !isCollapsed()) {
                 <i class="bi chevron-icon" [class.bi-chevron-down]="!m1.isExpanded" [class.bi-chevron-up]="m1.isExpanded"></i>
               }
             </a>
 
-            @if (m1.isExpanded && m1.children) {
+            @if (m1.isExpanded && m1.children && !isCollapsed()) {
               <ul class="nav-sub-list">
                 @for (m2 of m1.children; track m2.id) {
                   @if (!m2.permission || authService.hasPermission(m2.permission)) {
@@ -79,6 +80,11 @@
   </div>
 
   <div class="sidebar-footer">
+    <button class="btn btn-link text-white p-0 mb-3 w-100 text-center collapse-toggle" (click)="toggleCollapse()">
+      <i class="bi" [class.bi-arrow-bar-left]="!isCollapsed()" [class.bi-arrow-bar-right]="isCollapsed()"></i>
+      <span class="ms-2 small fw-bold" *ngIf="!isCollapsed()">Collapse Sidebar</span>
+    </button>
+    
     <div class="user-info">
       <div class="avatar" style="overflow: hidden;">
         @if (authService.user()?.profilePicture) {
@@ -87,7 +93,7 @@
           {{ authService.user()?.fullName?.charAt(0)?.toUpperCase() || 'U' }}
         }
       </div>
-      <div class="details">
+      <div class="details" *ngIf="!isCollapsed()">
         <span class="name">{{ authService.user()?.fullName || 'User' }}</span>
         <span class="role text-truncate">{{ authService.user()?.role || 'Administrator' }}</span>
       </div>

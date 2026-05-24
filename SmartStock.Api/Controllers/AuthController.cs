@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -92,9 +93,6 @@ namespace SmartStock.Api.Controllers
 
         private async Task<string> GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
-            //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-            //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
             // প্রাথমিক Claims লিস্ট তৈরি (List ব্যবহার করলে পরে Add করা সহজ হয়)
             var claims = new List<Claim>
             {
@@ -133,6 +131,31 @@ namespace SmartStock.Api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                         ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) 
+            {
+                // Fallback search by email if ID claim is mapped differently
+                user = await _userManager.FindByEmailAsync(userId);
+                if (user == null) return NotFound("User not found");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Password changed successfully!" });
+            }
+
+            return BadRequest(result.Errors);
+        }
     }
 }

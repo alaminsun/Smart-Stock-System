@@ -21,6 +21,7 @@ import { InvoiceHistoryComponent } from './components/billing/invoice-history/in
 import { ProfitLossComponent } from './components/reports/profit-loss/profit-loss.component';
 import { ActivityLogComponent } from './components/reports/activity-log/activity-log.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
   { path: 'products', 
     component: ProductManagementComponent,
     canActivate: [authGuard, permissionGuard],

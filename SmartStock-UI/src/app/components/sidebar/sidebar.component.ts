@@ -19,6 +19,7 @@ export class SidebarComponent implements OnInit {
   public authService = inject(AuthService);
   
   menuItems = signal<NavItem[]>([]);
+  isCollapsed = signal<boolean>(localStorage.getItem('sidebarCollapsed') === 'true');
 
   ngOnInit() {
     this.menuService.getMenus().subscribe(data => {
@@ -36,8 +37,16 @@ export class SidebarComponent implements OnInit {
   }
 
   toggle(item: NavItem) {
+    if (this.isCollapsed()) {
+      this.isCollapsed.set(false);
+    }
     item.isExpanded = !item.isExpanded;
     // Update signal to ensure view refresh
     this.menuItems.set([...this.menuItems()]);
+  }
+
+  toggleCollapse() {
+    this.isCollapsed.update(val => !val);
+    localStorage.setItem('sidebarCollapsed', this.isCollapsed().toString());
   }
 }

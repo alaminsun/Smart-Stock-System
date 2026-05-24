@@ -8,7 +8,49 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.collapsed {
+    width: 80px;
+
+    .sidebar-brand {
+      justify-content: center;
+      padding: 1.5rem 0;
+    }
+
+    .nav-list {
+      .nav-link-main {
+        justify-content: center;
+        padding: 0.75rem 0;
+        
+        .nav-icon {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .sidebar-footer {
+      .user-info {
+        justify-content: center;
+        padding: 0.5rem 0;
+      }
+    }
+  }
+
+  .collapse-toggle {
+    text-decoration: none;
+    transition: all 0.2s;
+    opacity: 0.6;
+    
+    &:hover {
+      opacity: 1;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    i {
+      font-size: 1.25rem;
+    }
+  }
 
   .sidebar-brand {
     padding: 1.5rem;

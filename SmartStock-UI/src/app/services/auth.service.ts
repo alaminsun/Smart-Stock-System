@@ -89,6 +89,10 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
+  changePassword(model: any) {
+    return this.http.post(`${this.apiUrl}/change-password`, model);
+  }
+
   isLoggedIn(): boolean {
     return !!this.currentUser();
   }

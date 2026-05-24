@@ -16,6 +16,17 @@ export class App {
 
   isProfileMenuOpen = signal(false);
 
+  constructor() {
+    this.applyInitialTheme();
+  }
+
+  private applyInitialTheme() {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
