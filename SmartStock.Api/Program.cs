@@ -171,13 +171,13 @@ using (var scope = app.Services.CreateScope())
                 await roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
+            var role = await roleManager.FindByNameAsync(roleName);
+            var existingClaims = await roleManager.GetClaimsAsync(role!);
+
             // Admin রোল-কে সব পারমিশন দেওয়া
             if (roleName == "Admin")
             {
-                var role = await roleManager.FindByNameAsync(roleName);
                 var allPermissions = new List<string>();
-
-                // Reflection ব্যবহার করে সব পারমিশন একবারে নেওয়া
                 var permissionClasses = typeof(SmartStock.Api.Constants.Permissions).GetNestedTypes();
                 foreach (var pClass in permissionClasses)
                 {
@@ -189,8 +189,27 @@ using (var scope = app.Services.CreateScope())
                     }
                 }
 
-                var existingClaims = await roleManager.GetClaimsAsync(role!);
                 foreach (var permission in allPermissions)
+                {
+                    if (!existingClaims.Any(c => c.Type == "Permission" && c.Value == permission))
+                    {
+                        await roleManager.AddClaimAsync(role!, new System.Security.Claims.Claim("Permission", permission));
+                    }
+                }
+            }
+            // Staff রোল-কে কিছু নির্দিষ্ট পারমিশন দেওয়া
+            else if (roleName == "Staff")
+            {
+                var staffPermissions = new List<string> 
+                { 
+                    SmartStock.Api.Constants.Permissions.Dashboard.View,
+                    SmartStock.Api.Constants.Permissions.Products.View,
+                    SmartStock.Api.Constants.Permissions.Inventory.View,
+                    SmartStock.Api.Constants.Permissions.Customers.View,
+                    SmartStock.Api.Constants.Permissions.Suppliers.View
+                };
+
+                foreach (var permission in staffPermissions)
                 {
                     if (!existingClaims.Any(c => c.Type == "Permission" && c.Value == permission))
                     {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 // Menu interface
 export interface NavItem {
@@ -19,13 +19,35 @@ export interface NavItem {
 export class MenuService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:5049/api/Menus';
-  //private apiUrl = 'https://localhost:7125/api/Menus';
-  //private apiUrl = '/api/Menus';
-
 
   // Get all menus (Tree Structure)
   getMenus(): Observable<NavItem[]> {
-    return this.http.get<NavItem[]>(this.apiUrl);
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(menus => this.normalizeMenus(menus))
+    );
+  }
+
+  // Normalization logic to handle PascalCase vs camelCase from API
+  private normalizeMenus(items: any[]): NavItem[] {
+    if (!items) return [];
+    return items.map(item => {
+      const normalized: NavItem = {
+        id: item.id !== undefined ? item.id : item.Id,
+        title: item.title || item.Title || '',
+        icon: item.icon || item.Icon,
+        link: item.link || item.Link,
+        permission: item.permission || item.Permission,
+        parentId: item.parentId !== undefined ? item.parentId : item.ParentId,
+        displayOrder: item.displayOrder !== undefined ? item.displayOrder : item.DisplayOrder,
+        children: item.children || item.Children || []
+      };
+
+      if (normalized.children && normalized.children.length > 0) {
+        normalized.children = this.normalizeMenus(normalized.children);
+      }
+
+      return normalized;
+    });
   }
 
   // 1. Method to save a new menu

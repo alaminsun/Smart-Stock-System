@@ -37,7 +37,7 @@ namespace SmartStock.Api.Controllers
                         m.Permission,
                         m.ParentId,
                         m.DisplayOrder,
-                        Children = GetChildren(allMenus, m.Id, 0) // ডেপথ লিমিট যোগ করা হলো
+                        Children = GetChildren(allMenus, m.Id, 0)
                     }).ToList();
 
                 return Ok(menuTree);
@@ -102,6 +102,13 @@ namespace SmartStock.Api.Controllers
         {
             var menu = await _menuRepository.GetByIdAsync(id);
             if (menu == null) return NotFound();
+
+            // Check if this menu has children
+            var hasChildren = await _menuRepository.ExistsAsync(m => m.ParentId == id);
+            if (hasChildren)
+            {
+                return BadRequest("এই মেনুর অধীনে সাব-মেনু আছে। আগে সাব-মেনুগুলো ডিলিট করুন।");
+            }
 
             await _menuRepository.DeleteAsync(menu);
             await _menuRepository.SaveChangesAsync();

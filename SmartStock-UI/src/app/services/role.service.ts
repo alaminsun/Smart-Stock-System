@@ -31,6 +31,11 @@ export class RoleService {
 getPermissionsByRole(roleName: string): Observable<string[]> {
   return this.http.get<string[]>(`${this.apiUrl}/get-role-permissions/${roleName}`);
 }
+
+getAllPermissions(): Observable<string[]> {
+  return this.http.get<string[]>(`${this.apiUrl}/all-permissions`);
+}
+
 removePermission(roleName: string, permission: string): Observable<any> {
   return this.http.post(`${this.apiUrl}/remove-permission`, {
     roleName: roleName,
