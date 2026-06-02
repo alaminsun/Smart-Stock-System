@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 export interface GlobalSetting {
   key: string;
@@ -12,7 +13,8 @@ export interface GlobalSetting {
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5049/api/Settings';
+  //private apiUrl = 'http://localhost:5049/api/Settings';
+  private apiUrl = `${environment.apiUrl}/Settings`;
 
   // Public settings signal
   public settings = signal<{ [key: string]: string }>({

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 // Menu interface
 export interface NavItem {
@@ -18,7 +19,8 @@ export interface NavItem {
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5049/api/Menus';
+  //private apiUrl = 'http://localhost:5049/api/Menus';
+  private apiUrl = `${environment.apiUrl}/Menus`;
 
   // Get all menus (Tree Structure)
   getMenus(): Observable<NavItem[]> {

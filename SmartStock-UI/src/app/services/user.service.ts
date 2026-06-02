@@ -1,13 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5049/api/Users'; 
+  //private apiUrl = 'http://localhost:5049/api/Users'; 
   //private apiUrl = 'https://localhost:7125/api/Users';
   //private apiUrl = '/api/Users';
+  private apiUrl = `${environment.apiUrl}/Users`;
 
 
   // Get list of all users with roles

@@ -2,16 +2,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuditLogService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5049/api/auditlog'
+ //private apiUrl = 'http://localhost:5049/api/auditlog'
   //private apiUrl = 'https://localhost:7125/api/auditlog'
-  //private apiUrl = '/api/auditlog';
+  private apiUrl = `${environment.apiUrl}/auditlog`
 
 
   getAuditLogs(page: number = 1, pageSize: number = 50): Observable<any> {

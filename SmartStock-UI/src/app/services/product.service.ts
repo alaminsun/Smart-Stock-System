@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 export interface Product {
   id?: string; // Guid matches string in TS
@@ -18,9 +19,9 @@ export interface Product {
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5049/api/Products';
+  //private apiUrl = 'http://localhost:5049/api/Products';
   //private apiUrl = 'https://localhost:7125/api/Products';
-  //private apiUrl = '/api/Products';
+  private apiUrl = `${environment.apiUrl}/Products`;
 
 
   // Global signal for instant UI updates
